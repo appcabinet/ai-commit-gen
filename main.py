@@ -3,10 +3,8 @@ import subprocess
 import openai
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Get the OpenAI API key from environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def run_command(command):
@@ -20,18 +18,21 @@ def get_git_diff():
 
 def generate_commit_message(diff):
     prompt = f"""
-Based on the following git diff, generate a concise and descriptive commit message:
+Given the following git diff, generate a clear, concise commit message.
 
 {diff}
 
-The commit message should start with either 'feat:' for new features, 'chore:' for maintenance tasks, or 'bug:' for bug related fixes.
-Limit the message to 50 characters for the subject line.
+Requirements:
+- Begin with one of: 'feat:' (new feature), 'chore:' (maintenance), or 'bug:' (bug fix).
+- Use an imperative, present-tense verb.
+- Subject line must be 50 characters or fewer.
+- Summarize the main change; do not include details or explanations.
 """
 
     response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant that generates git commit messages."},
+            {"role": "system", "content": "You are an expert level software engineer, with a clear understanding of how to write succinct, informative git commit messages."},
             {"role": "user", "content": prompt}
         ]
     )
